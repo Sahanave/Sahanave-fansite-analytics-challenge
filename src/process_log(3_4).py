@@ -3,6 +3,7 @@ import numpy as np
 from collections import Counter
 from datetime import datetime
 from time import strftime
+from collections import OrderedDict
 import heapq
 import os, sys
 filename='log.txt'
@@ -50,6 +51,7 @@ def difference(input1, input2):
      time_difference = 3600*(index1[0]-index2[0])+60*(index1[1]-index2[1])+(index1[2]-index2[2])
     else:
      time_differnce='NAN'
+     
     return time_difference
       
 #parsing the data into respective columns
@@ -136,24 +138,24 @@ while i <(len(data_for_blocking)):
             del blocklist[index]
             i += 1
             continue
-        elif protocol1 == '200' and index in blocklist and difference(blocklist[index][0], time_arr) < window:
+        elif code == '200' and index in blocklist and difference(blocklist[index][0], time_arr) < window:
             if blocklist[index][1] >= 3:
                 blocks_file.write('\n',raw_data[i])
             i += 1
             continue
-        elif protocol1 == '401' and index in blocklist and difference(blocklist[index][0], time_arr) > window:
+        elif code == '401' and index in blocklist and difference(blocklist[index][0], time_arr) > window:
             del blocklist[index]
             blocklist[index] = [data_for_blocking[i][0], 1]
             i += 1
             continue
-        elif protocol1 == '401' and index not in blocklist:
+        elif code == '401' and index not in blocklist:
             blocklist[index] = [data_for_blocking[i][0], 1]
             i += 1
             continue
-        elif protocol1 == '401' and ip1 in blocklist and difference(blocklist[ip1][0], time_arr) < window:
-            tryCount = blocklist[index][1] + 1
-            blocklist[index][1] = tryCount
-            if tryCount > 3:
+        elif code == '401' and ip1 in blocklist and difference(blocklist[ip1][0], time_arr) < window:
+            Count = blocklist[index][1] + 1
+            blocklist[index][1] = Count
+            if Count > 3:
               blocks_file.write('\n',raw_data[i])
             i += 1
             continue
